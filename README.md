@@ -61,22 +61,22 @@ As you can see, Even though it's running on Proton, we can still detect the unde
 
 Integrate HarmonyLink 2.0 into your game project with ease:
 
-1. Download the latest version of HarmonyLink 2.0 from the [releases page](https://github.com/Jordonbc/HarmonyLink/releases/latest).
+1. Download the latest version of HarmonyLink 2.0 from the [releases page](https://git.bbgames.dev/jordon/HarmonyLink/releases/latest).
 2. Add the HarmonyLink DLL to your project according to your development environment's specifications.
 3. Utilize the provided API to access device-specific metrics and enhance your game's performance on handheld devices.
 
-Refer to the [integration documentation](https://github.com/Jordonbc/HarmonyLink/wiki/Integration-Guide) for detailed instructions.
+Refer to the [integration documentation](https://git.bbgames.dev/jordon/HarmonyLink/wiki) for detailed instructions.
 
 ### Unreal Engine 5 Plugin
 
 For developers leveraging Unreal Engine 5.3 or newer*, HarmonyLink 2.0 is readily accessible as a plugin:
 
-1. Clone or download the HarmonyLink UE5 Plugin from the [Unreal Engine Plugin repository](https://github.com/Jordonbc/HarmonyLinkUE).
+1. Clone or download the HarmonyLink UE5 Plugin from the [Unreal Engine Plugin repository](https://git.bbgames.dev/jordon/HarmonyLinkUE).
 2. Place the HarmonyLink plugin folder into the `Plugins` directory of your Unreal Engine 5 project.
 3. Enable the HarmonyLink plugin from the Edit > Plugins menu within Unreal Engine 5.
 4. Access HarmonyLink functionalities via Blueprints or C++ within your project.
 
-For a step-by-step guide, visit the [Unreal Engine 5 Plugin instructions](https://github.com/Jordonbc/HarmonyLinkUE/wiki/Integration-Guide) on our wiki.
+For a step-by-step guide, visit the [Unreal Engine 5 Plugin instructions](https://git.bbgames.dev/jordon/HarmonyLinkUE/wiki) on our wiki.
 
 *With potential backward compatibility, not verified.
 
@@ -91,7 +91,7 @@ If you prefer to build HarmonyLink 2.0 from the source code, follow these steps:
 5. Compile the code by running `cmake --build build --config Release`.
 6. The built DLL will be located in the `build/bin/HarmonyLinkLib` directory.
 
-For additional building options and troubleshooting, refer to the [building from source documentation](https://github.com/Jordonbc/HarmonyLink/wiki/Building-From-Source).
+For additional building options and troubleshooting, refer to the [building from source documentation](https://git.bbgames.dev/jordon/HarmonyLink/wiki).
 
 
 ## How It Works
