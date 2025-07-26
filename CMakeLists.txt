@@ -1,85 +1,54 @@
-# Copyright (c) 2024 Jordon Brooks
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-# 
-#   http://www.apache.org/licenses/LICENSE-2.0#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 cmake_minimum_required(VERSION 3.10)
-project(HarmonyLinkProject)
+project(HarmonyLinkProject LANGUAGES CXX)
 
-# Check the build type and display a message accordingly
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    message(STATUS "Building for Debug")
-elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-    message(STATUS "Building for Release")
-elseif(CMAKE_BUILD_TYPE STREQUAL "MinSizeRel")
-    message(STATUS "Building for MinSizeRel")
-elseif(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
-    message(STATUS "Building for RelWithDebInfo")
-else()
-    message(STATUS "Building with unspecified build type")
+# avoid CMP0111 warning
+if(POLICY CMP0111)
+    cmake_policy(SET CMP0111 NEW)
 endif()
 
-add_compile_definitions($<$<CONFIG:Debug>:DEBUG_MODE>)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-#set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release CACHE STRING "" FORCE)
+endif()
+message(STATUS "Configuring for ${CMAKE_BUILD_TYPE}")
 
-# Platform-specific definitions
-if(WIN32)
-  add_definitions(-DBUILD_WINDOWS)
-elseif(UNIX)
-  if(APPLE)
-    add_definitions(-DBUILD_MACOS)
+# path to Cargo output
+set(RUST_DIR "${CMAKE_SOURCE_DIR}/target")
+string(TOLOWER "${CMAKE_BUILD_TYPE}" CFG)      # debug / release
+string(TOUPPER "${CMAKE_BUILD_TYPE}" CFG_UPPER) # DEBUG / RELEASE
+
+# helper to find artifact
+function(find_art var kind)
+  if(kind STREQUAL "static")
+    set(ext a)
   else()
-    add_definitions(-DBUILD_LINUX)
+    set(ext so)
   endif()
-  add_definitions(-DBUILD_UNIX)
-endif()
 
-# Set global output directories for all build types
-#foreach(TYPE IN ITEMS DEBUG RELEASE)
-#    string(TOUPPER ${TYPE} TYPE_UPPER)
-#    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${TYPE_UPPER} "${CMAKE_BINARY_DIR}/bin/${TYPE}")
-#    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_${TYPE_UPPER} "${CMAKE_BINARY_DIR}/lib/${TYPE}")
-#    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${TYPE_UPPER} "${CMAKE_BINARY_DIR}/archive/${TYPE}")
-#endforeach()
+  file(GLOB files
+       "${RUST_DIR}/${CFG}/libharmony_link*.${ext}"
+       "${RUST_DIR}/${CFG}/deps/libharmony_link*.${ext}")
+  list(SORT files)
+  list(GET files 0 f)
+  if(NOT f)
+    message(FATAL_ERROR "Missing Rust ${kind} lib in target/${CFG}")
+  endif()
+  set(${var} "${f}" PARENT_SCOPE)
+endfunction()
 
-# Add the library and executable directories
+find_art(RUST_STATIC static)
+find_art(RUST_SHARED shared)
 
-add_subdirectory(HarmonyLinkLib)
+add_library(HarmonyLinkLibStatic STATIC IMPORTED GLOBAL)
+set_target_properties(HarmonyLinkLibStatic PROPERTIES
+  IMPORTED_LOCATION_${CFG_UPPER} "${RUST_STATIC}"
+  INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}/include")
+
+add_library(HarmonyLinkLibShared SHARED IMPORTED GLOBAL)
+set_target_properties(HarmonyLinkLibShared PROPERTIES
+  IMPORTED_LOCATION_${CFG_UPPER} "${RUST_SHARED}"
+  INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}/include")
+
 add_subdirectory(HarmonyLinkTest)
-
-# Add Google Test as a subdirectory
-#add_subdirectory(ThirdParty/googletest)
-
-# Enable testing
-#enable_testing()
-
-# Include Google Test's include directory
-#include_directories(ThirdParty/googletest/googletest/include)
-
-# Define your test executable
-#file(GLOB_RECURSE TEST_SOURCES "tests/*.cpp")
-#add_executable(Testing ${TEST_SOURCES})
-
-# Set HarmonyLinkTest as the default startup project
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT HarmonyLinkTestShared)
-
-# Link Google Test and HarmonyLink library to the test executable
-#target_link_libraries(Testing gtest gtest_main gmock HarmonyLinkLib)
-
-#add_custom_command(TARGET Testing POST_BUILD
-#    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-#    "$<TARGET_FILE:HarmonyLinkLib>"
-#    "$<TARGET_FILE_DIR:Testing>")
-
-# Discover tests
-#include(GoogleTest)
-#gtest_discover_tests(Testing)

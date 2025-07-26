@@ -27,3 +27,8 @@ winbuild/
 !Compile.sh
 !Compile.bat
 HarmonyLinkLib/.vscode/
+
+
+# Added by cargo
+
+/target

@@ -17,7 +17,7 @@
 #include <thread>
 #include <atomic>
 
-#include "HarmonyLinkLib.h"
+#include "HarmonyLink.h"
 
 // Include necessary headers for platform-specific functionality
 #ifdef BUILD_WINDOWS
@@ -89,7 +89,7 @@ int main()
 
     std::thread inputThread(checkForQuit);
 
-    if (!HarmonyLinkLib::HL_Init())
+    if (!HL::init())
     {
         std::cout << "Failed to init HarmonyLinkLib\n";
         return 1;
@@ -97,73 +97,73 @@ int main()
 
     std::cout << "HarmonyLinkLib successfully initialised!\n";
 
-    const bool isWine = HarmonyLinkLib::get_is_wine();
+    /*const bool isWine = HarmonyLinkLib::get_is_wine();
     const char* test = isWine ? "is" : "isn't";
 
     const HarmonyLinkLib::FOSVerInfo* os_info = HarmonyLinkLib::get_os_version();
 
     const HarmonyLinkLib::FDevice* device_info = HarmonyLinkLib::get_device_info();
 
-    const HarmonyLinkLib::FCPUInfo* cpu_info = HarmonyLinkLib::get_cpu_info();
+    const HarmonyLinkLib::FCPUInfo* cpu_info = HarmonyLinkLib::get_cpu_info();*/
 
     // This loop is to test how stable & expensive these functions are
-    while (!quitFlag)
+    /*while (!quitFlag)
     {
         // Clear the screen
         clearScreen();
 
-        std::wcout << "This program " << test << " running under wine.\n";
+        //std::wcout << "This program " << test << " running under wine.\n";
 
-        if (cpu_info)
+        /*if (cpu_info)
         {
             cpu_info->print();
-        }
+        }*/
 
-        if (os_info)
+        /*if (os_info)
         {
             os_info->print();
-        }
+        }*/
 
-        if (device_info)
+        /*if (device_info)
         {
             wprintf(L"Is SteamDeck: %s\n", device_info->device == HarmonyLinkLib::EDevice::STEAM_DECK ? L"true" : L"false");
-        }
+        }*/
 
         // we can't do this before the loop because we need updated values
-        if (const HarmonyLinkLib::FBattery* battery = HarmonyLinkLib::get_battery_status())
+        /*if (const HarmonyLinkLib::FBattery* battery = HarmonyLinkLib::get_battery_status())
         {
             battery->to_string();
             battery->free();
-        }
+        }*/
 
-        const bool is_docked = HarmonyLinkLib::get_is_docked();
+        //const bool is_docked = HarmonyLinkLib::get_is_docked();
 
-        const char* dock_check_string = is_docked ? "is" : "isn't";
+        //const char* dock_check_string = is_docked ? "is" : "isn't";
 
-        wprintf(L"Device %hs docked\n", dock_check_string);
+        //wprintf(L"Device %hs docked\n", dock_check_string);
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    }
+    //    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    //}
 
     if (inputThread.joinable())
     {
         inputThread.join();
     }
 
-    if (os_info)
+    /*if (os_info)
     {
         os_info->free();
-    }
+    }*/
 
-    if (device_info)
+    /*if (device_info)
     {
         device_info->free();
-    }
+    }*/
 
-    if (cpu_info)
+    /*if (cpu_info)
     {
         cpu_info->free();
-    }
+    }*/
     
     return 0;
 }
